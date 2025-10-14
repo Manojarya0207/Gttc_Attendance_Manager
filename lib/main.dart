@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async'; // Required for Future.delayed
 
-/// Represents the Login screen of the application.
+/// Login Screen
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -21,8 +21,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _login() {
-    final String username = _usernameController.text;
-    final String password = _passwordController.text;
+    final username = _usernameController.text;
+    final password = _passwordController.text;
 
     if (username.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -39,6 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF121212), // Dark background
       appBar: AppBar(
         title: const Text('Login to Smart Attendance'),
         backgroundColor: Colors.blueAccent,
@@ -58,15 +59,18 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 50),
               TextField(
                 controller: _usernameController,
-                decoration: const InputDecoration(
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
                   labelText: 'Username or Email',
+                  labelStyle: const TextStyle(color: Colors.white70),
                   hintText: 'Enter your username or email',
+                  hintStyle: const TextStyle(color: Colors.white54),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  prefixIcon: Icon(Icons.person),
+                  prefixIcon: const Icon(Icons.person, color: Colors.white70),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: const Color(0xFF1E1E1E),
                 ),
                 keyboardType: TextInputType.emailAddress,
                 textInputAction: TextInputAction.next,
@@ -75,15 +79,18 @@ class _LoginScreenState extends State<LoginScreen> {
               TextField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: const InputDecoration(
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
                   labelText: 'Password',
+                  labelStyle: const TextStyle(color: Colors.white70),
                   hintText: 'Enter your password',
+                  hintStyle: const TextStyle(color: Colors.white54),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  prefixIcon: Icon(Icons.lock),
+                  prefixIcon: const Icon(Icons.lock, color: Colors.white70),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: const Color(0xFF1E1E1E),
                 ),
                 textInputAction: TextInputAction.done,
               ),
@@ -172,7 +179,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255), // Dark mode background
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -180,7 +187,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             FadeTransition(
               opacity: _opacityAnimation,
               child: Image.asset(
-                'assets/GTTC-Lgo-.png', // Your uploaded logo
+                'assets/GTTC-Lgo-.png', // Your logo image
                 width: 150,
                 height: 150,
                 fit: BoxFit.contain,
@@ -188,11 +195,11 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
             ),
             const SizedBox(height: 20),
             const Text(
-              'Smart Attendance',
+              'Gttc Attendance Manager',
               style: TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
-                color: Colors.blueAccent,
+                color: Color.fromARGB(255, 10, 10, 10), // White text for dark mode
               ),
             ),
             const SizedBox(height: 10),
@@ -200,7 +207,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
               'Simplifying Attendance Tracking',
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey,
+                color: Color.fromARGB(179, 10, 10, 10),
               ),
             ),
           ],
@@ -217,18 +224,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Smart Attendance App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+      title: 'Gttc Attendance Manager',
+      themeMode: ThemeMode.dark,
+      darkTheme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color(0xFF121212),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.blueAccent,
           foregroundColor: Colors.white,
-          titleTextStyle: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
         ),
       ),
       home: const SplashScreen(),
