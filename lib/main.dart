@@ -9,17 +9,12 @@ void main() {
 /// -----------------------------
 /// Mock Auth Service (in-memory)
 /// -----------------------------
-/// This simple service keeps users in-memory during the app lifecycle.
-/// Each user: {email, password, role, name}
-/// - Register only allows "Teacher" and "Student" (per requirement)
-/// - There is one pre-created Admin account (admin@demo.com / admin123)
 class AuthService {
   AuthService._privateConstructor();
 
   static final AuthService instance = AuthService._privateConstructor();
 
   final Map<String, Map<String, String>> _users = {
-    // pre-seeded admin
     'manojarya0207@gmail.com': {
       'password': 'manojarya',
       'role': 'Admin',
@@ -32,7 +27,7 @@ class AuthService {
   Future<String?> register({
     required String email,
     required String password,
-    required String role, // Teacher or Student (we will enforce)
+    required String role,
     required String name,
   }) async {
     final e = email.trim().toLowerCase();
@@ -42,14 +37,13 @@ class AuthService {
     if (!(role == 'Teacher' || role == 'Student')) {
       return 'Only Teacher and Student can register here.';
     }
-    // simple password policy
     if (password.length < 6) return 'Password must be at least 6 characters';
     _users[e] = {
       'password': password,
       'role': role,
       'name': name,
     };
-    return null; // success
+    return null;
   }
 
   Future<Map<String, String>?> login({
@@ -61,7 +55,6 @@ class AuthService {
     if (!_users.containsKey(e)) return null;
     final user = _users[e]!;
     if (user['password'] != password) return null;
-    // allow login only for matching role (admin account should choose Admin)
     if (user['role'] != roleSelected) return null;
     return {
       'email': e,
@@ -104,7 +97,7 @@ class MyApp extends StatelessWidget {
 }
 
 /// -----------------------------
-/// SPLASH SCREEN (fade logo)
+/// SPLASH SCREEN
 /// -----------------------------
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -132,7 +125,6 @@ class _SplashScreenState extends State<SplashScreen>
 
     _animController.forward();
 
-    // wait then navigate
     Timer(const Duration(milliseconds: 2500), () {
       if (mounted) {
         Navigator.of(context).pushReplacement(
@@ -150,7 +142,6 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    // white background for brand splash (keeps logo colors intact), then app uses dark theme
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -188,7 +179,7 @@ class _SplashScreenState extends State<SplashScreen>
 }
 
 /// -----------------------------
-/// AUTH ENTRY: choose Login / Register
+/// AUTH ENTRY
 /// -----------------------------
 class AuthEntry extends StatelessWidget {
   const AuthEntry({super.key});
@@ -196,7 +187,6 @@ class AuthEntry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // gradient background
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -282,7 +272,7 @@ class AuthEntry extends StatelessWidget {
 }
 
 /// -----------------------------
-/// GLASS CARD Widget (reusable)
+/// GLASS CARD Widget
 /// -----------------------------
 class GlassCard extends StatelessWidget {
   final Widget child;
@@ -359,7 +349,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     setState(() => _loading = true);
-    await Future.delayed(const Duration(milliseconds: 600)); // faux delay
+    await Future.delayed(const Duration(milliseconds: 600));
 
     final user = await AuthService.instance.login(
       email: _email.text,
@@ -376,7 +366,6 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    // navigate to role-specific home
     if (user['role'] == 'Admin') {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => AdminDashboard(name: user['name']!, email: user['email']!)),
@@ -395,7 +384,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // gradient background
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -425,7 +413,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     const Text('Choose your role and login', style: TextStyle(color: Colors.white70)),
                     const SizedBox(height: 18),
 
-                    // role dropdown
                     DropdownButtonFormField<String>(
                       value: _role,
                       decoration: const InputDecoration(
@@ -439,7 +426,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 14),
 
-                    // email
                     TextFormField(
                       controller: _email,
                       style: const TextStyle(color: Colors.white),
@@ -459,7 +445,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 12),
 
-                    // password
                     TextFormField(
                       controller: _password,
                       style: const TextStyle(color: Colors.white),
@@ -475,7 +460,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 18),
 
-                    // login button
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
@@ -492,7 +476,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 10),
 
-                    // forgot / register
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -522,7 +505,7 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 /// -----------------------------
-/// REGISTER SCREEN (no Admin option)
+/// REGISTER SCREEN
 /// -----------------------------
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -539,7 +522,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String _role = 'Student';
   bool _loading = false;
 
-  final _roles = ['Teacher', 'Student']; // Admin not available
+  final _roles = ['Teacher', 'Student'];
 
   @override
   void dispose() {
@@ -575,7 +558,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // keep consistent gradient background
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -598,7 +580,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     const Text('Create Account', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
                     const SizedBox(height: 10),
 
-                    // role
                     DropdownButtonFormField<String>(
                       value: _role,
                       decoration: const InputDecoration(labelText: 'Register as', prefixIcon: Icon(Icons.badge, color: Colors.white70)),
@@ -607,7 +588,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     const SizedBox(height: 12),
 
-                    // name
                     TextFormField(
                       controller: _name,
                       decoration: const InputDecoration(labelText: 'Full name', prefixIcon: Icon(Icons.person, color: Colors.white70)),
@@ -616,7 +596,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     const SizedBox(height: 12),
 
-                    // email
                     TextFormField(
                       controller: _email,
                       decoration: const InputDecoration(labelText: 'Email', prefixIcon: Icon(Icons.email, color: Colors.white70)),
@@ -632,7 +611,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     const SizedBox(height: 12),
 
-                    // password
                     TextFormField(
                       controller: _password,
                       obscureText: true,
@@ -675,7 +653,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
 }
 
 /// -----------------------------
-/// ADMIN DASHBOARD (placeholder)
+/// CONFIRMATION DIALOG HELPER
+/// -----------------------------
+Future<bool> _showConfirmationDialog(BuildContext context, String title, String content) async {
+  return await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(title),
+          content: Text(content),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF0B72FF)),
+              child: const Text('Confirm'),
+            ),
+          ],
+        ),
+      ) ?? false;
+}
+
+/// -----------------------------
+/// ADMIN DASHBOARD
 /// -----------------------------
 class AdminDashboard extends StatelessWidget {
   final String name;
@@ -690,11 +692,18 @@ class AdminDashboard extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const AuthEntry()),
-                (route) => false,
+            onPressed: () async {
+              bool confirm = await _showConfirmationDialog(
+                context,
+                'Logout',
+                'Are you sure you want to logout?',
               );
+              if (confirm) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const AuthEntry()),
+                  (route) => false,
+                );
+              }
             },
           )
         ],
@@ -711,16 +720,30 @@ class AdminDashboard extends StatelessWidget {
             const Text('Admin actions', style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             ElevatedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Manage users — implement backend integration.')));
+              onPressed: () async {
+                bool confirm = await _showConfirmationDialog(
+                  context,
+                  'Manage Users',
+                  'Proceed to manage users and classes?',
+                );
+                if (confirm) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Manage users — implement backend integration.')));
+                }
               },
               icon: const Icon(Icons.manage_accounts),
               label: const Text('Manage users & classes'),
             ),
             const SizedBox(height: 10),
             ElevatedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Export / Reports — implement backend integration.')));
+              onPressed: () async {
+                bool confirm = await _showConfirmationDialog(
+                  context,
+                  'Export Attendance',
+                  'This will generate and download attendance reports. Continue?',
+                );
+                if (confirm) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Export / Reports — implement backend integration.')));
+                }
               },
               icon: const Icon(Icons.file_download),
               label: const Text('Export attendance'),
@@ -733,7 +756,7 @@ class AdminDashboard extends StatelessWidget {
 }
 
 /// -----------------------------
-/// TEACHER HOME (placeholder)
+/// TEACHER HOME
 /// -----------------------------
 class TeacherHome extends StatelessWidget {
   final String name;
@@ -748,11 +771,18 @@ class TeacherHome extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const AuthEntry()),
-                (route) => false,
+            onPressed: () async {
+              bool confirm = await _showConfirmationDialog(
+                context,
+                'Logout',
+                'Are you sure you want to logout?',
               );
+              if (confirm) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const AuthEntry()),
+                  (route) => false,
+                );
+              }
             },
           )
         ],
@@ -767,8 +797,15 @@ class TeacherHome extends StatelessWidget {
             Text('Email: $email', style: const TextStyle(color: Colors.white70)),
             const SizedBox(height: 20),
             ElevatedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Mark attendance — connect to classroom API.')));
+              onPressed: () async {
+                bool confirm = await _showConfirmationDialog(
+                  context,
+                  'Mark Attendance',
+                  'Are you ready to mark attendance for your class?',
+                );
+                if (confirm) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Mark attendance — connect to classroom API.')));
+                }
               },
               icon: const Icon(Icons.check_box_outlined),
               label: const Text('Mark Attendance'),
@@ -789,7 +826,7 @@ class TeacherHome extends StatelessWidget {
 }
 
 /// -----------------------------
-/// STUDENT HOME (placeholder)
+/// STUDENT HOME
 /// -----------------------------
 class StudentHome extends StatelessWidget {
   final String name;
@@ -804,11 +841,18 @@ class StudentHome extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const AuthEntry()),
-                (route) => false,
+            onPressed: () async {
+              bool confirm = await _showConfirmationDialog(
+                context,
+                'Logout',
+                'Are you sure you want to logout?',
               );
+              if (confirm) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const AuthEntry()),
+                  (route) => false,
+                );
+              }
             },
           )
         ],
@@ -831,8 +875,15 @@ class StudentHome extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             ElevatedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Request correction — implement backend.')));
+              onPressed: () async {
+                bool confirm = await _showConfirmationDialog(
+                  context,
+                  'Request Correction',
+                  'Do you want to submit an attendance correction request?',
+                );
+                if (confirm) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Request correction — implement backend.')));
+                }
               },
               icon: const Icon(Icons.edit_note),
               label: const Text('Request Correction'),
