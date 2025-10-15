@@ -20,8 +20,8 @@ class AuthService {
 
   final Map<String, Map<String, String>> _users = {
     // pre-seeded admin
-    'admin@demo.com': {
-      'password': 'admin123',
+    'manojarya0207@gmail.com': {
+      'password': 'manojarya',
       'role': 'Admin',
       'name': 'GTTC Admin',
     },
