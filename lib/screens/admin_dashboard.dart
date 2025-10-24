@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/dialog_utils.dart';
 import 'auth_entry_screen.dart';
 
@@ -64,6 +65,11 @@ class _AdminDashboardState extends State<AdminDashboard>
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
 
+  // Theme & Language
+  ThemeMode _currentTheme = ThemeMode.dark;
+  static const List<String> _supportedLocales = ['en', 'es'];
+  String _currentLocale = 'en';
+
   List<AppNotification> _notifications = [
     AppNotification(
       id: '1',
@@ -100,12 +106,34 @@ class _AdminDashboardState extends State<AdminDashboard>
   @override
   void initState() {
     super.initState();
+    _loadSettings();
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
     _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
     _controller.forward();
+  }
+
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    final themeStr = prefs.getString('theme_mode') ?? 'dark';
+    final locale = prefs.getString('locale') ?? 'en';
+
+    setState(() {
+      _currentTheme = themeStr == 'light' ? ThemeMode.light : ThemeMode.dark;
+      _currentLocale = locale;
+    });
+  }
+
+  Future<void> _saveTheme(String mode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('theme_mode', mode);
+  }
+
+  Future<void> _saveLocale(String locale) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('locale', locale);
   }
 
   @override
@@ -190,7 +218,7 @@ class _AdminDashboardState extends State<AdminDashboard>
       ),
       drawer: _buildSideDrawer(context),
       body: Container(
-        color: Colors.indigo[900], // Standard dark background
+        color: Colors.indigo[900],
         child: SafeArea(
           child: FadeTransition(
             opacity: _fadeAnimation,
@@ -249,7 +277,7 @@ class _AdminDashboardState extends State<AdminDashboard>
         children: [
           UserAccountsDrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.indigo[800], // Slightly lighter for contrast
+              color: Colors.indigo[800],
             ),
             currentAccountPicture: const CircleAvatar(
               backgroundColor: Colors.white,
@@ -546,24 +574,120 @@ class _AdminDashboardState extends State<AdminDashboard>
       children: [
         const Text('Settings', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
         const SizedBox(height: 20),
-        _settingsTile(Icons.lock, 'Change Password', 'Update your password'),
-        _settingsTile(Icons.notifications, 'Notification Preferences', 'Manage alerts'),
-        _settingsTile(Icons.color_lens, 'Theme', 'Switch between light/dark mode'),
-        _settingsTile(Icons.language, 'Language', 'Select app language'),
-        _settingsTile(Icons.help_outline, 'Help & Support', 'Contact support team'),
+        _settingsTile(
+          Icons.lock,
+          'Change Password',
+          'Update your password',
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Change Password coming soon!')));
+          },
+        ),
+        _buildThemeTile(),
+        _buildLanguageTile(),
+        _settingsTile(
+          Icons.help_outline,
+          'Help & Support',
+          'Contact support team',
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Help & Support coming soon!')));
+          },
+        ),
       ],
     );
   }
 
-  Widget _settingsTile(IconData icon, String title, String subtitle) {
+  Widget _buildThemeTile() {
+    return ListTile(
+      leading: const Icon(Icons.dark_mode, color: Colors.white),
+      title: const Text('Theme', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+      subtitle: Text(
+        _currentTheme == ThemeMode.dark ? 'Dark mode' : 'Light mode',
+        style: const TextStyle(color: Colors.white70),
+      ),
+      trailing: Switch(
+        value: _currentTheme == ThemeMode.dark,
+        activeColor: Colors.blue,
+        onChanged: (value) async {
+          final newMode = value ? ThemeMode.dark : ThemeMode.light;
+          final modeStr = value ? 'dark' : 'light';
+          await _saveTheme(modeStr);
+          setState(() {
+            _currentTheme = newMode;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Theme set to ${value ? "dark" : "light"} mode. Restart app to apply fully.'),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildLanguageTile() {
+    return ListTile(
+      leading: const Icon(Icons.language, color: Colors.white),
+      title: const Text('Language', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+      subtitle: Text(
+        _currentLocale == 'en' ? 'English' : 'Español',
+        style: const TextStyle(color: Colors.white70),
+      ),
+      onTap: () async {
+        await showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.indigo[900],
+          builder: (ctx) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Select Language',
+                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 16),
+                  ..._supportedLocales.map((code) {
+                    final label = code == 'en' ? 'English' : 'Español';
+                    return ListTile(
+                      title: Text(label, style: const TextStyle(color: Colors.white)),
+                      trailing: _currentLocale == code
+                          ? const Icon(Icons.check, color: Colors.blue)
+                          : null,
+                      onTap: () async {
+                        await _saveLocale(code);
+                        setState(() {
+                          _currentLocale = code;
+                        });
+                        Navigator.pop(ctx);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Language changed to $label')),
+                        );
+                      },
+                    );
+                  }).toList(),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _settingsTile(IconData icon, String title, String subtitle, {VoidCallback? onTap}) {
     return ListTile(
       leading: Icon(icon, color: Colors.white),
       title: Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
       subtitle: Text(subtitle, style: const TextStyle(color: Colors.white70)),
       trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white54, size: 16),
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$title feature coming soon!')));
-      },
+      onTap: onTap ??
+          () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('$title feature coming soon!')),
+            );
+          },
     );
   }
 
