@@ -90,10 +90,10 @@ class _AdminDashboardState extends State<AdminDashboard>
   List<Activity> get _allActivities {
     final now = DateTime.now();
     return [
-      Activity(title: "User John Doe registered", icon: Icons.person_add, timestamp: now.subtract(const Duration(hours: 2)), color: Colors.greenAccent),
-      Activity(title: "Attendance report exported", icon: Icons.file_download, timestamp: now.subtract(const Duration(hours: 2, minutes: 25)), color: Colors.blueAccent),
-      Activity(title: "Password changed for teacher", icon: Icons.lock, timestamp: now.subtract(const Duration(days: 1)), color: Colors.orangeAccent),
-      Activity(title: "New announcement posted", icon: Icons.campaign, timestamp: now.subtract(const Duration(days: 2)), color: Colors.purpleAccent),
+      Activity(title: "User John Doe registered", icon: Icons.person_add, timestamp: now.subtract(const Duration(hours: 2)), color: Colors.green),
+      Activity(title: "Attendance report exported", icon: Icons.file_download, timestamp: now.subtract(const Duration(hours: 2, minutes: 25)), color: Colors.blue),
+      Activity(title: "Password changed for teacher", icon: Icons.lock, timestamp: now.subtract(const Duration(days: 1)), color: Colors.orange),
+      Activity(title: "New announcement posted", icon: Icons.campaign, timestamp: now.subtract(const Duration(days: 2)), color: Colors.purple),
     ];
   }
 
@@ -123,9 +123,8 @@ class _AdminDashboardState extends State<AdminDashboard>
 
   void _goToNotifications() {
     setState(() {
-      _selectedIndex = 3; // Notifications tab index
+      _selectedIndex = 3;
     });
-    // Do NOT pop unless drawer is open — AppBar tap should just switch tab
   }
 
   @override
@@ -160,7 +159,7 @@ class _AdminDashboardState extends State<AdminDashboard>
           Stack(
             children: [
               IconButton(
-                onPressed: _goToNotifications, // ✅ Only switch tab
+                onPressed: _goToNotifications,
                 icon: const Icon(Icons.notifications, color: Colors.white),
               ),
               if (_notifications.isNotEmpty)
@@ -191,13 +190,7 @@ class _AdminDashboardState extends State<AdminDashboard>
       ),
       drawer: _buildSideDrawer(context),
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF1A2980), Color(0xFF26D0CE)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+        color: Colors.indigo[900], // Standard dark background
         child: SafeArea(
           child: FadeTransition(
             opacity: _fadeAnimation,
@@ -214,8 +207,8 @@ class _AdminDashboardState extends State<AdminDashboard>
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black.withOpacity(0.8),
-        selectedItemColor: Colors.cyanAccent,
+        backgroundColor: Colors.indigo[900]?.withOpacity(0.9) ?? Colors.black,
+        selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white70,
         currentIndex: _selectedIndex,
         type: BottomNavigationBarType.fixed,
@@ -250,25 +243,21 @@ class _AdminDashboardState extends State<AdminDashboard>
 
   Drawer _buildSideDrawer(BuildContext context) {
     return Drawer(
-      backgroundColor: const Color(0xFF0D1B2A),
+      backgroundColor: Colors.indigo[900],
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF1A2980), Color(0xFF26D0CE)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+            decoration: BoxDecoration(
+              color: Colors.indigo[800], // Slightly lighter for contrast
             ),
             currentAccountPicture: const CircleAvatar(
               backgroundColor: Colors.white,
               child: Icon(Icons.admin_panel_settings,
-                  color: Colors.blueAccent, size: 40),
+                  color: Colors.blue, size: 40),
             ),
             accountName: Text(widget.name,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
             accountEmail:
                 Text(widget.email, style: const TextStyle(color: Colors.white70)),
           ),
@@ -280,7 +269,7 @@ class _AdminDashboardState extends State<AdminDashboard>
           _drawerItem(Icons.settings, 'Settings', 5),
           const Divider(color: Colors.white30),
           ListTile(
-            leading: const Icon(Icons.logout, color: Colors.redAccent),
+            leading: const Icon(Icons.logout, color: Colors.red),
             title: const Text('Logout', style: TextStyle(color: Colors.white)),
             onTap: () async {
               bool confirm = await showConfirmationDialog(
@@ -306,11 +295,12 @@ class _AdminDashboardState extends State<AdminDashboard>
       leading: Icon(icon, color: Colors.white),
       title: Text(title, style: const TextStyle(color: Colors.white)),
       selected: _selectedIndex == index,
+      selectedTileColor: Colors.indigo[700],
       onTap: () {
         setState(() {
           _selectedIndex = index;
         });
-        Navigator.pop(context); // ✅ Safe to pop here — only when drawer is open
+        Navigator.pop(context);
       },
     );
   }
@@ -330,10 +320,10 @@ class _AdminDashboardState extends State<AdminDashboard>
             spacing: 20,
             runSpacing: 20,
             children: [
-              _buildCircularIndicator("Attendance", 0.92, Colors.greenAccent, Icons.access_time_filled),
-              _buildCircularIndicator("Teacher Activity", 0.78, Colors.orangeAccent, Icons.person),
-              _buildCircularIndicator("Student Participation", 0.86, Colors.blueAccent, Icons.school),
-              _buildCircularIndicator("System Health", 0.95, Colors.purpleAccent, Icons.memory),
+              _buildCircularIndicator("Attendance", 0.92, Colors.green, Icons.access_time_filled),
+              _buildCircularIndicator("Teacher Activity", 0.78, Colors.orange, Icons.person),
+              _buildCircularIndicator("Student Participation", 0.86, Colors.blue, Icons.school),
+              _buildCircularIndicator("System Health", 0.95, Colors.purple, Icons.memory),
             ],
           ),
           const SizedBox(height: 40),
@@ -355,12 +345,12 @@ class _AdminDashboardState extends State<AdminDashboard>
                 spacing: 15,
                 runSpacing: 15,
                 children: [
-                  _buildActionCard('Manage Users', Icons.group, Colors.orangeAccent, cardWidth),
-                  _buildActionCard('Reports', Icons.bar_chart, Colors.greenAccent, cardWidth),
-                  _buildActionCard('Export Attendance', Icons.file_download, Colors.purpleAccent, cardWidth),
-                  _buildActionCard('Feedback', Icons.feedback_outlined, Colors.pinkAccent, cardWidth),
-                  _buildActionCard('Announcements', Icons.campaign, Colors.blueAccent, cardWidth),
-                  _buildActionCard('Settings', Icons.settings, Colors.tealAccent, cardWidth),
+                  _buildActionCard('Manage Users', Icons.group, Colors.orange, cardWidth),
+                  _buildActionCard('Reports', Icons.bar_chart, Colors.green, cardWidth),
+                  _buildActionCard('Export Attendance', Icons.file_download, Colors.purple, cardWidth),
+                  _buildActionCard('Feedback', Icons.feedback_outlined, Colors.pink, cardWidth),
+                  _buildActionCard('Announcements', Icons.campaign, Colors.blue, cardWidth),
+                  _buildActionCard('Settings', Icons.settings, Colors.teal, cardWidth),
                 ],
               );
             },
@@ -404,7 +394,7 @@ class _AdminDashboardState extends State<AdminDashboard>
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: color.withOpacity(0.5), width: 1),
         boxShadow: [
-          BoxShadow(color: color.withOpacity(0.4), blurRadius: 8, offset: const Offset(0, 4)),
+          BoxShadow(color: color.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4)),
         ],
       ),
       child: Column(
@@ -421,7 +411,6 @@ class _AdminDashboardState extends State<AdminDashboard>
           ),
           const SizedBox(height: 10),
           Text(title, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14)),
-          const SizedBox(height: 4),
           Text('${(percent * 100).toStringAsFixed(1)}%', style: TextStyle(color: color, fontSize: 16, fontWeight: FontWeight.w600)),
         ],
       ),
@@ -483,7 +472,7 @@ class _AdminDashboardState extends State<AdminDashboard>
       color: Colors.white.withOpacity(0.1),
       child: ListTile(
         contentPadding: const EdgeInsets.all(12),
-        leading: const Icon(Icons.notifications_active, color: Colors.cyan),
+        leading: const Icon(Icons.notifications_active, color: Colors.blue),
         title: Text(notif.title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -494,7 +483,7 @@ class _AdminDashboardState extends State<AdminDashboard>
           ],
         ),
         trailing: IconButton(
-          icon: const Icon(Icons.delete, color: Colors.redAccent),
+          icon: const Icon(Icons.delete, color: Colors.red),
           onPressed: () => _deleteNotification(notif.id),
         ),
       ),
@@ -539,8 +528,8 @@ class _AdminDashboardState extends State<AdminDashboard>
               icon: const Icon(Icons.send),
               label: const Text('Submit Feedback'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.cyanAccent,
-                foregroundColor: Colors.black,
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
@@ -604,7 +593,7 @@ class _AdminDashboardState extends State<AdminDashboard>
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: Colors.white.withOpacity(0.3)),
           boxShadow: [
-            BoxShadow(color: color.withOpacity(0.4), blurRadius: 8, offset: const Offset(0, 4)),
+            BoxShadow(color: color.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4)),
           ],
         ),
         child: Column(
@@ -635,7 +624,7 @@ class AppSearchDelegate extends SearchDelegate<String> {
           query = '';
           showSuggestions(context);
         },
-        icon: const Icon(Icons.clear),
+        icon: const Icon(Icons.clear, color: Colors.white),
       ),
     ];
   }
@@ -644,7 +633,7 @@ class AppSearchDelegate extends SearchDelegate<String> {
   Widget? buildLeading(BuildContext context) {
     return IconButton(
       onPressed: () => close(context, ''),
-      icon: const Icon(Icons.arrow_back),
+      icon: const Icon(Icons.arrow_back, color: Colors.white),
     );
   }
 
@@ -665,7 +654,7 @@ class AppSearchDelegate extends SearchDelegate<String> {
           const Center(child: Text('No results found.', style: TextStyle(color: Colors.white70)))
         else ...[
           if (filteredActivities.isNotEmpty) ...[
-            const ListTile(title: Text('Activities', style: TextStyle(color: Colors.cyanAccent, fontWeight: FontWeight.bold))),
+            const ListTile(title: Text('Activities', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold))),
             ...filteredActivities.map((a) => ListTile(
                   leading: CircleAvatar(backgroundColor: a.color.withOpacity(0.3), child: Icon(a.icon, color: a.color)),
                   title: Text(a.title, style: const TextStyle(color: Colors.white)),
@@ -673,9 +662,9 @@ class AppSearchDelegate extends SearchDelegate<String> {
                 )),
           ],
           if (filteredNotifications.isNotEmpty) ...[
-            const ListTile(title: Text('Notifications', style: TextStyle(color: Colors.cyanAccent, fontWeight: FontWeight.bold))),
+            const ListTile(title: Text('Notifications', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold))),
             ...filteredNotifications.map((n) => ListTile(
-                  leading: const Icon(Icons.notifications, color: Colors.cyan),
+                  leading: const Icon(Icons.notifications, color: Colors.blue),
                   title: Text(n.title, style: const TextStyle(color: Colors.white)),
                   subtitle: Text(n.message, style: const TextStyle(color: Colors.white54)),
                 )),
