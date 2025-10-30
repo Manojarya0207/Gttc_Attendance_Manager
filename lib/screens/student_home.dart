@@ -409,13 +409,13 @@ class _StudentHomeState extends State<StudentHome>
           title,
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w500,
-            color: AppColors.darkBlack, // ✅ Title in dark black
+            color: const Color.fromRGBO(115, 63, 184, 1), // ✅ Title in dark black
           ),
         ),
         subtitle: Text(
           value,
           style: GoogleFonts.poppins(
-            color: AppColors.darkBlackSecondary, // ✅ Subtitle in secondary dark
+            color: const Color.fromARGB(255, 248, 246, 246), // ✅ Subtitle in secondary dark
           ),
         ),
       ),
