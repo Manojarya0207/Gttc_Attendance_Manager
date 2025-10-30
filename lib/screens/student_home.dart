@@ -4,20 +4,22 @@ import 'package:table_calendar/table_calendar.dart';
 import '../utils/dialog_utils.dart';
 import 'auth_entry_screen.dart';
 
-// ✅ Standardized App Colors (all in one place)
+// ✅ Standardized App Colors — now with dark black text variants
 class AppColors {
   static const Color primary = Colors.deepPurple;
   static const Color accent = Colors.blueAccent;
   static const Color background = Color(0xFFF5F4FB);
   static const Color white = Colors.white;
-  static const Color textPrimary = Colors.black87;
-  static const Color textSecondary = Colors.black54;
 
-  // Attendance status colors (use shades where needed in widgets)
-  static final MaterialColor presentBase = Colors.green;
-  static final MaterialColor absentBase = Colors.red;
-  static final MaterialColor leaveBase = Colors.orange;
-  static final MaterialColor holidayBase = Colors.blue;
+  // 🖤 Dark black for better readability (not pure #000000)
+  static const Color darkBlack = Color(0xFF121212);        // Primary text
+  static const Color darkBlackSecondary = Color(0xFF424242); // Secondary text
+
+  // Attendance status colors
+  static const Color presentBase = Colors.greenAccent;
+  static const Color absentBase = Colors.redAccent;
+  static const Color leaveBase = Colors.orangeAccent;
+  static const Color holidayBase = Colors.blueAccent;
 }
 
 class StudentHome extends StatefulWidget {
@@ -135,10 +137,10 @@ class _StudentHomeState extends State<StudentHome>
 
   /// 🏠 Home Tab (Calendar)
   Widget _buildHomeTab() {
-    final Color present = AppColors.presentBase.shade700;
-    final Color absent = AppColors.absentBase.shade200;
-    final Color leave = AppColors.leaveBase.shade200;
-    final Color holiday = AppColors.holidayBase.shade100;
+    final Color present = AppColors.presentBase;
+    final Color absent = AppColors.absentBase;
+    final Color leave = AppColors.leaveBase;
+    final Color holiday = AppColors.holidayBase;
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -149,13 +151,13 @@ class _StudentHomeState extends State<StudentHome>
             style: GoogleFonts.poppins(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: AppColors.primary,
+              color: AppColors.darkBlack, // ✅ Updated
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Check your monthly attendance below.',
-            style: GoogleFonts.poppins(color: AppColors.textSecondary),
+            style: GoogleFonts.poppins(color: AppColors.darkBlackSecondary), // ✅ Updated
           ),
           const SizedBox(height: 20),
           Card(
@@ -255,7 +257,13 @@ class _StudentHomeState extends State<StudentHome>
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 6),
-        Text(label, style: GoogleFonts.poppins(fontSize: 13)),
+        Text(
+          label,
+          style: GoogleFonts.poppins(
+            fontSize: 13,
+            color: AppColors.darkBlackSecondary, // ✅ Consistent secondary text
+          ),
+        ),
       ],
     );
   }
@@ -272,7 +280,7 @@ class _StudentHomeState extends State<StudentHome>
             style: GoogleFonts.poppins(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: AppColors.primary,
+              color: AppColors.darkBlack, // ✅ Updated
             ),
           ),
           const SizedBox(height: 12),
@@ -300,7 +308,10 @@ class _StudentHomeState extends State<StudentHome>
               icon: const Icon(Icons.edit_note),
               label: Text(
                 'Request Correction',
-                style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.white,
+                ),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
@@ -328,8 +339,21 @@ class _StudentHomeState extends State<StudentHome>
             style: TextStyle(color: AppColors.white),
           ),
         ),
-        title: Text(title, style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
-        trailing: Text(value, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold)),
+        title: Text(
+          title,
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w500,
+            color: AppColors.darkBlack, // ✅ Primary text
+          ),
+        ),
+        trailing: Text(
+          value,
+          style: GoogleFonts.poppins(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: AppColors.darkBlack, // ✅ Bold value in dark black
+          ),
+        ),
       ),
     );
   }
@@ -343,7 +367,11 @@ class _StudentHomeState extends State<StudentHome>
         children: [
           Text(
             'Profile',
-            style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold),
+            style: GoogleFonts.poppins(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: AppColors.darkBlack, // ✅ Updated
+            ),
           ),
           const SizedBox(height: 16),
           _buildProfileTile(Icons.person, 'Name', widget.name),
@@ -377,8 +405,19 @@ class _StudentHomeState extends State<StudentHome>
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: ListTile(
         leading: Icon(icon, color: AppColors.primary),
-        title: Text(title, style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
-        subtitle: Text(value, style: GoogleFonts.poppins(color: AppColors.textPrimary)),
+        title: Text(
+          title,
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w500,
+            color: AppColors.darkBlack, // ✅ Title in dark black
+          ),
+        ),
+        subtitle: Text(
+          value,
+          style: GoogleFonts.poppins(
+            color: AppColors.darkBlackSecondary, // ✅ Subtitle in secondary dark
+          ),
+        ),
       ),
     );
   }
