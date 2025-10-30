@@ -157,7 +157,7 @@ class _StudentHomeState extends State<StudentHome>
           const SizedBox(height: 8),
           Text(
             'Check your monthly attendance below.',
-            style: GoogleFonts.poppins(color: AppColors.darkBlackSecondary), // ✅ Updated
+            style: GoogleFonts.poppins(color: const Color.fromARGB(255, 8, 8, 8)), // ✅ Updated
           ),
           const SizedBox(height: 20),
           Card(
@@ -280,7 +280,7 @@ class _StudentHomeState extends State<StudentHome>
             style: GoogleFonts.poppins(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: AppColors.darkBlack, // ✅ Updated
+              color: const Color.fromARGB(255, 17, 17, 17), // ✅ Updated
             ),
           ),
           const SizedBox(height: 12),
@@ -343,7 +343,7 @@ class _StudentHomeState extends State<StudentHome>
           title,
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w500,
-            color: AppColors.darkBlack, // ✅ Primary text
+            color: const Color.fromARGB(255, 245, 243, 243), // ✅ Primary text
           ),
         ),
         trailing: Text(
@@ -351,7 +351,7 @@ class _StudentHomeState extends State<StudentHome>
           style: GoogleFonts.poppins(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: AppColors.darkBlack, // ✅ Bold value in dark black
+            color: const Color.fromARGB(255, 245, 241, 241), // ✅ Bold value in dark black
           ),
         ),
       ),
