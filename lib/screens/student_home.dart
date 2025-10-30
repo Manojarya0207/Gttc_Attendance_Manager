@@ -4,6 +4,22 @@ import 'package:table_calendar/table_calendar.dart';
 import '../utils/dialog_utils.dart';
 import 'auth_entry_screen.dart';
 
+// ✅ Standardized App Colors (all in one place)
+class AppColors {
+  static const Color primary = Colors.deepPurple;
+  static const Color accent = Colors.blueAccent;
+  static const Color background = Color(0xFFF5F4FB);
+  static const Color white = Colors.white;
+  static const Color textPrimary = Colors.black87;
+  static const Color textSecondary = Colors.black54;
+
+  // Attendance status colors (use shades where needed in widgets)
+  static final MaterialColor presentBase = Colors.green;
+  static final MaterialColor absentBase = Colors.red;
+  static final MaterialColor leaveBase = Colors.orange;
+  static final MaterialColor holidayBase = Colors.blue;
+}
+
 class StudentHome extends StatefulWidget {
   final String name;
   final String email;
@@ -72,18 +88,17 @@ class _StudentHomeState extends State<StudentHome>
 
   @override
   Widget build(BuildContext context) {
-    final Color primary = Colors.deepPurple;
-    final Color accent = Colors.blueAccent;
-    final Color background = const Color(0xFFF5F4FB);
-
     return Scaffold(
-      backgroundColor: background,
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        backgroundColor: primary,
+        backgroundColor: AppColors.primary,
         elevation: 3,
         title: Text(
           _tabs[_selectedIndex],
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Colors.white),
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            color: AppColors.white,
+          ),
         ),
         actions: [
           IconButton(
@@ -107,7 +122,7 @@ class _StudentHomeState extends State<StudentHome>
         selectedIndex: _selectedIndex,
         onDestinationSelected: _onItemTapped,
         backgroundColor: Colors.white,
-        indicatorColor: primary.withOpacity(0.1),
+        indicatorColor: AppColors.primary.withOpacity(0.1),
         elevation: 3,
         destinations: const [
           NavigationDestination(icon: Icon(Icons.home_outlined), label: 'Home'),
@@ -120,10 +135,10 @@ class _StudentHomeState extends State<StudentHome>
 
   /// 🏠 Home Tab (Calendar)
   Widget _buildHomeTab() {
-    final Color present = Colors.greenAccent.shade700;
-    final Color absent = Colors.redAccent.shade200;
-    final Color leave = Colors.orangeAccent.shade200;
-    final Color holiday = Colors.blueAccent.shade100;
+    final Color present = AppColors.presentBase.shade700;
+    final Color absent = AppColors.absentBase.shade200;
+    final Color leave = AppColors.leaveBase.shade200;
+    final Color holiday = AppColors.holidayBase.shade100;
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -134,13 +149,13 @@ class _StudentHomeState extends State<StudentHome>
             style: GoogleFonts.poppins(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: Colors.deepPurple,
+              color: AppColors.primary,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Check your monthly attendance below.',
-            style: GoogleFonts.poppins(color: Colors.black54),
+            style: GoogleFonts.poppins(color: AppColors.textSecondary),
           ),
           const SizedBox(height: 20),
           Card(
@@ -165,11 +180,11 @@ class _StudentHomeState extends State<StudentHome>
                 },
                 calendarStyle: CalendarStyle(
                   todayDecoration: BoxDecoration(
-                    color: Colors.deepPurpleAccent.withOpacity(0.6),
+                    color: AppColors.primary.withOpacity(0.6),
                     shape: BoxShape.circle,
                   ),
                   selectedDecoration: BoxDecoration(
-                    color: Colors.deepPurple,
+                    color: AppColors.primary,
                     shape: BoxShape.circle,
                   ),
                   outsideDaysVisible: false,
@@ -234,7 +249,11 @@ class _StudentHomeState extends State<StudentHome>
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(width: 12, height: 12, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
         const SizedBox(width: 6),
         Text(label, style: GoogleFonts.poppins(fontSize: 13)),
       ],
@@ -248,16 +267,22 @@ class _StudentHomeState extends State<StudentHome>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Attendance Summary',
-              style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepPurple)),
+          Text(
+            'Attendance Summary',
+            style: GoogleFonts.poppins(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primary,
+            ),
+          ),
           const SizedBox(height: 12),
-          _buildStatCard('Total Days', '30', Colors.deepPurple),
+          _buildStatCard('Total Days', '30', AppColors.primary),
           const SizedBox(height: 10),
-          _buildStatCard('Present', '26', Colors.green),
+          _buildStatCard('Present', '26', AppColors.presentBase),
           const SizedBox(height: 10),
-          _buildStatCard('Absent', '2', Colors.redAccent),
+          _buildStatCard('Absent', '2', AppColors.absentBase),
           const SizedBox(height: 10),
-          _buildStatCard('Leave', '2', Colors.orangeAccent),
+          _buildStatCard('Leave', '2', AppColors.leaveBase),
           const Spacer(),
           Center(
             child: ElevatedButton.icon(
@@ -273,14 +298,15 @@ class _StudentHomeState extends State<StudentHome>
                 }
               },
               icon: const Icon(Icons.edit_note),
-              label: Text('Request Correction',
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
+              label: Text(
+                'Request Correction',
+                style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+              ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
-                foregroundColor: Colors.white,
+                backgroundColor: AppColors.primary,
+                foregroundColor: AppColors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                shape:
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
           ),
@@ -295,7 +321,13 @@ class _StudentHomeState extends State<StudentHome>
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: ListTile(
-        leading: CircleAvatar(backgroundColor: color, child: Text(value[0], style: const TextStyle(color: Colors.white))),
+        leading: CircleAvatar(
+          backgroundColor: color,
+          child: Text(
+            value[0],
+            style: TextStyle(color: AppColors.white),
+          ),
+        ),
         title: Text(title, style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
         trailing: Text(value, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold)),
       ),
@@ -309,7 +341,10 @@ class _StudentHomeState extends State<StudentHome>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Profile', style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold)),
+          Text(
+            'Profile',
+            style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 16),
           _buildProfileTile(Icons.person, 'Name', widget.name),
           _buildProfileTile(Icons.email, 'Email', widget.email),
@@ -322,10 +357,14 @@ class _StudentHomeState extends State<StudentHome>
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              icon: const Icon(Icons.logout, color: Colors.white),
-              label: Text('Logout',
-                  style: GoogleFonts.poppins(
-                      color: Colors.white, fontWeight: FontWeight.w500)),
+              icon: const Icon(Icons.logout, color: AppColors.white),
+              label: Text(
+                'Logout',
+                style: GoogleFonts.poppins(
+                  color: AppColors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
           ),
         ],
@@ -337,9 +376,9 @@ class _StudentHomeState extends State<StudentHome>
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: ListTile(
-        leading: Icon(icon, color: Colors.deepPurple),
+        leading: Icon(icon, color: AppColors.primary),
         title: Text(title, style: GoogleFonts.poppins(fontWeight: FontWeight.w500)),
-        subtitle: Text(value, style: GoogleFonts.poppins(color: Colors.black87)),
+        subtitle: Text(value, style: GoogleFonts.poppins(color: AppColors.textPrimary)),
       ),
     );
   }
